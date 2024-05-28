@@ -1,0 +1,32 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux/archlinux:latest
+      options: --privileged
+
+    steps:
+      - name: Update packages
+        run: pacman -Syu --noconfirm
+
+      - name: Install packages
+        run: pacman -S --noconfirm git archiso
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build ISO
+        run: ./build-plasma-iso
+
+      - name: Publish ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: archlinux-plasma
+          path: out/*.iso
