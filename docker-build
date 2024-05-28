@@ -3,6 +3,6 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 pacman -Syu --noconfirm
 
-pacman -S --noconfirm archiso wezterm-terminfo
+pacman -S --noconfirm archiso
 
-mkarchiso -v -w /tmp/archiso-work $SCRIPT_DIR/releng
+$SCRIPT_DIR/build-plasma-iso
