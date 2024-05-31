@@ -1,0 +1,111 @@
+---
+- name: Build archiso-plasma
+  hosts: localhost
+  connection: local
+  become: false
+
+  tasks:
+    - name: Update base system
+      community.general.pacman:
+        update_cache: true
+        upgrade: true
+    
+    - name: Install required packages
+      community.general.pacman:
+        name: 
+          - archiso
+    
+    - name: Copy releng profile to working directory
+      ansible.builtin.copy:
+        src: /usr/share/archiso/configs/releng/
+        dest: /build/archiso-plasma/
+        force: true
+        remote_src: true
+    
+    - name: Add packages to packages.x86_64
+      ansible.builtin.lineinfile:
+        path: /build/archiso-plasma/packages.x86_64
+        line: "{{ item }}"
+        create: true
+      with_items:
+        - plasma-meta
+        - firefox
+        - mesa
+        - nvidia
+        - konsole
+        - networkmanager
+        - network-manager-applet
+        - partitionmanager
+        - dolphin
+        - virtualbox-guest-utils
+
+    - name: Remove unnecessary packages from packages.x86_64
+      ansible.builtin.lineinfile:
+        path: /build/archiso-plasma/packages.x86_64
+        state: absent
+        line: "{{ item }}"
+      with_items:
+        - virtualbox-guest-utils-nox
+    
+    - name: Enable sddm
+      ansible.builtin.file:
+        path: /build/archiso-plasma/airootfs/etc/systemd/system/display-manager.service
+        state: link
+        src: /usr/lib/systemd/system/sddm.service
+        force: true
+
+    - name: Enable NetworkManager
+      ansible.builtin.file:
+        path: /build/archiso-plasma/airootfs/etc/systemd/system/multi-user.target.wants/NetworkManager.service
+        state: link
+        src: /usr/lib/systemd/system/NetworkManager.service
+        force: true
+
+    - name: Enable NetworkManager-wait-online
+      ansible.builtin.file:
+        path: /build/archiso-plasma/airootfs/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
+        state: link
+        src: /usr/lib/systemd/system/NetworkManager-wait-online.service
+        force: true
+
+    - name: Disable systemd-networkd
+      ansible.builtin.file:
+        path: /build/archiso-plasma/airootfs/etc/systemd/system/multi-user.target.wants/systemd-networkd.service
+        state: absent
+
+    - name: Disable systemd-resolved
+      ansible.builtin.file:
+        path: /build/archiso-plasma/airootfs/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
+        state: absent
+
+    - name: Disable systemd-networkd-wait-online
+      ansible.builtin.file:
+        path: /build/archiso-plasma/airootfs/etc/systemd/system/network-online.target.wants/systemd-networkd-wait-online.service
+        state: absent
+
+    - name: Configure pam
+      ansible.builtin.copy:
+        src: pam.d/
+        dest: /build/archiso-plasma/airootfs/etc/pam.d/
+        force: true
+
+    - name: Configure sddm
+      ansible.builtin.copy:
+        src: sddm.conf.d/
+        dest: /build/archiso-plasma/airootfs/etc/sddm.conf.d/
+        force: true
+
+    - name: Configure users
+      ansible.builtin.copy:
+        src: auth/
+        dest: /build/archiso-plasma/airootfs/etc/
+        force: true
+
+    - name: Build the ISO
+      ansible.builtin.command:
+        cmd: mkarchiso -v -w /tmp/archiso-work -o /build/out /build/archiso-plasma/
+
+    - name: Cleanup
+      ansible.builtin.file:
+        path: /build/archiso-plasma/
+        state: absent

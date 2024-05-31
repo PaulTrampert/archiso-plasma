@@ -3,6 +3,6 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 pacman -Syu --noconfirm
 
-pacman -S --noconfirm archiso
+pacman -S --noconfirm archiso ansible
 
-$SCRIPT_DIR/build-plasma-iso
+ansible-playbook $SCRIPT_DIR/playbook.yml
