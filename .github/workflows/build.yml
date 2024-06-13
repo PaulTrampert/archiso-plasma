@@ -29,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: archlinux-plasma
-          path: out/*.iso
+          path: /build/out/*.iso
 
   release:
     needs: build
@@ -45,7 +45,7 @@ jobs:
     - uses: softprops/action-gh-release@v1
       with:
         tag_name: 
-        files: out/*.iso
+        files: /build/out/*.iso
         fail_on_unmatched_files: true
         target_commitish: ${{github.sha}}
         generate_release_notes: true
