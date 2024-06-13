@@ -22,6 +22,27 @@
         force: true
         remote_src: true
     
+    - name: Set ISO Name
+      ansible.builtin.lineinfile:
+        path: /build/archiso-plasma/profiledef.sh
+        regexp: '^iso_name='
+        line: 'iso_name="archlinux-plasma"'
+        create: false
+        
+    - name: Set ISO Label
+      ansible.builtin.lineinfile:
+        path: /build/archiso-plasma/profiledef.sh
+        regexp: '^iso_label='
+        line: iso_label="ARCH_PLASMA_$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y%m)"
+        create: false
+
+    - name: Set ISO Publisher
+      ansible.builtin.lineinfile:
+        path: /build/archiso-plasma/profiledef.sh
+        regexp: '^iso_publisher='
+        line: iso_publisher="Paul Trampert <https://github.com/PaulTrampert/archiso-plasma>"
+        create: false
+
     - name: Add packages to packages.x86_64
       ansible.builtin.lineinfile:
         path: /build/archiso-plasma/packages.x86_64
