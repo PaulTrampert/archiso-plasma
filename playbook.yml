@@ -73,6 +73,7 @@
         path: /build/archiso-plasma/airootfs/etc/systemd/system/display-manager.service
         state: link
         src: /usr/lib/systemd/system/sddm.service
+        follow: false
         force: true
 
     - name: Enable NetworkManager
@@ -80,6 +81,7 @@
         path: /build/archiso-plasma/airootfs/etc/systemd/system/multi-user.target.wants/NetworkManager.service
         state: link
         src: /usr/lib/systemd/system/NetworkManager.service
+        follow: false
         force: true
 
     - name: Enable NetworkManager-wait-online
@@ -87,6 +89,7 @@
         path: /build/archiso-plasma/airootfs/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
         state: link
         src: /usr/lib/systemd/system/NetworkManager-wait-online.service
+        follow: false
         force: true
 
     - name: Disable systemd-networkd
