@@ -4,8 +4,6 @@ on:
   schedule:
     - cron: '0 0 * * MON'
   push:
-    branches:
-      - main
 
 jobs:
   build:
@@ -41,7 +39,7 @@ jobs:
     steps:
     - name: Get Date
       run: echo "$(date +'%Y.%m.%d')-${{github.run_attempt}}" >> $GITHUB_ENV
-      
+
     - uses: actions/download-artifact@v3
         
     - uses: softprops/action-gh-release@v1
