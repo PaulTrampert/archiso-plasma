@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build ISO
-        run: ./build-plasma-iso
+        run: ./docker-build
 
       - name: Publish ISO
         uses: actions/upload-artifact@v4
