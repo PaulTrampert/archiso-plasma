@@ -27,8 +27,27 @@ jobs:
       - name: Build ISO
         run: ./docker-build
 
-      - name: Publish ISO
+      - name: Upload ISO artifact
         uses: actions/upload-artifact@v4
         with:
           name: archlinux-plasma
           path: out/*.iso
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{github.ref == 'refs/heads/master'}}
+
+    steps:
+    - name: Get Date
+      run: echo "$(date +'%Y.%m.%d')-${{github.run_attempt}}" >> $GITHUB_ENV
+      
+    - uses: actions/download-artifact@v3
+        
+    - uses: softprops/action-gh-release@v1
+      with:
+        tag_name: 
+        files: out/*.iso
+        fail_on_unmatched_files: true
+        target_commitish: ${{github.sha}}
+        generate_release_notes: true
