@@ -46,11 +46,14 @@ jobs:
 
     - name: Show downloaded artifacts
       run: ls -R
+
+    - name: Compress ISO
+      run: tar czvf archlinux-plasma-$VERSION.tar.gz *.iso
         
     - uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ env.VERSION }}
-        files: "*.iso"
+        files: "*.tar.gz"
         fail_on_unmatched_files: true
         target_commitish: ${{github.sha}}
         generate_release_notes: true
