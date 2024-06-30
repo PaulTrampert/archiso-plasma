@@ -38,7 +38,10 @@ jobs:
 
     steps:
     - name: Get Date
-      run: echo "VERSION=$(date +'%Y.%m.%d')-${{github.run_attempt}}" > $GITHUB_ENV
+      run: echo "DATE=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+    
+    - name: Get Version
+      run: echo "VERSION=$DATE-${{github.run_attempt}}" >> $GITHUB_ENV
 
     - uses: actions/download-artifact@v4
       with:
@@ -47,13 +50,18 @@ jobs:
     - name: Show downloaded artifacts
       run: ls -R
 
-    - name: Compress ISO
-      run: tar czvf archlinux-plasma-$VERSION.tar.gz *.iso
-        
+    - name: Upload iso to repository
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: 'https://packages.ptrampert.com/repository/archiso-plasma/archlinux-plasma-${{ env.DATE }}-x86_64.iso'
+        method: 'PUT'
+        username: ${{ secrets.ARTIFACT_REPO_USER }}
+        password: ${{ secrets.ARTIFACT_REPO_PASSWORD }}
+        file: 'archlinux-plasma-${{ env.DATE }}-x86_64.iso'
+
     - uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ env.VERSION }}
-        files: "*.tar.gz"
-        fail_on_unmatched_files: true
         target_commitish: ${{github.sha}}
+        body: "Download link: https://packages.ptrampert.com/repository/archiso-plasma/archlinux-plasma-${{ env.DATE }}-x86_64.iso"
         generate_release_notes: true
