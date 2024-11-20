@@ -59,6 +59,8 @@ jobs:
         username: ${{ secrets.ARTIFACT_REPO_USER }}
         password: ${{ secrets.ARTIFACT_REPO_PASSWORD }}
         file: 'archlinux-plasma-${{ env.DATE }}-x86_64.iso'
+        contentType: 'application/octet-stream'
+        timeout: 600000
 
     - uses: softprops/action-gh-release@v2
       with:
