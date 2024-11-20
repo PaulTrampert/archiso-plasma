@@ -52,15 +52,7 @@ jobs:
       run: ls -R
 
     - name: Upload iso to repository
-      uses: fjogeleit/http-request-action@v1
-      with:
-        url: 'https://packages.ptrampert.com/repository/archiso-plasma/archlinux-plasma-${{ env.DATE }}-x86_64.iso'
-        method: 'PUT'
-        username: ${{ secrets.ARTIFACT_REPO_USER }}
-        password: ${{ secrets.ARTIFACT_REPO_PASSWORD }}
-        file: 'archlinux-plasma-${{ env.DATE }}-x86_64.iso'
-        contentType: 'application/octet-stream'
-        timeout: 600000
+      run: curl -v --user "${{ secrets.ARTIFACT_REPO_USER }}:${{ secrets.ARTIFACT_REPO_PASSWORD }}" --upload-file ./archlinux-plasma-$DATE-x86_64.iso https://packages.ptrampert.com/repository/archiso-plasma/archlinux-plasma-$DATE-x86_64.iso
 
     - uses: softprops/action-gh-release@v2
       with:
