@@ -59,6 +59,10 @@
         - partitionmanager
         - dolphin
         - virtualbox-guest-utils
+        - rclone
+        - keepassxc
+        - git
+        - ansible
 
     - name: Remove unnecessary packages from packages.x86_64
       ansible.builtin.lineinfile:
