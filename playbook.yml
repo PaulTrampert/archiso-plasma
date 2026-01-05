@@ -52,7 +52,7 @@
         - plasma-meta
         - firefox
         - mesa
-        - nvidia
+        - nvidia-open
         - konsole
         - networkmanager
         - network-manager-applet
