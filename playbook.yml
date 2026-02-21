@@ -49,6 +49,7 @@
         line: "{{ item }}"
         create: true
       with_items:
+        - archlinux-wallpaper
         - plasma-meta
         - firefox
         - mesa
@@ -63,6 +64,7 @@
         - keepassxc
         - git
         - ansible
+        - sddm
 
     - name: Remove unnecessary packages from packages.x86_64
       ansible.builtin.lineinfile:
@@ -128,6 +130,19 @@
         src: auth/
         dest: /build/archiso-plasma/airootfs/etc/
         force: true
+
+    - name: Copy plasma theme
+      ansible.builtin.copy:
+        src: plasma-customizations/Archy
+        dest: /build/archiso-plasma/airootfs/usr/share/plasma/look-and-feel/
+
+    - name: Setup desktop theme
+      community.general.ini_file:
+        path: /build/archiso-plasma/airootfs/home/archie/.config/kdeglobals
+        section: "KDE"
+        option: "LookAndFeelPackage"
+        value: "Archy"
+        create: true
 
     - name: Build the ISO
       ansible.builtin.command:
